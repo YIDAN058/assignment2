@@ -1,0 +1,50 @@
+﻿@page "/mortgagecases/details"
+@using Microsoft.EntityFrameworkCore
+@using assignment2.Data
+@inject IDbContextFactory<assignment2.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>MortgageCase</h2>
+    <hr />
+    @if (mortgagecase is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">CustomerId</dt>
+            <dd class="col-sm-10">@mortgagecase.CustomerId</dd>
+            <dt class="col-sm-2">Amount</dt>
+            <dd class="col-sm-10">@mortgagecase.Amount</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@mortgagecase.Status</dd>
+        </dl>
+        <div>
+            <a href="@($"/mortgagecases/edit?id={mortgagecase.Id}")">Edit</a> |
+            <a href="@($"/mortgagecases")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private MortgageCase? mortgagecase;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        mortgagecase = await context.MortgageCases.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (mortgagecase is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

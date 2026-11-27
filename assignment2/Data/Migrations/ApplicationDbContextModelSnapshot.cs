@@ -17,7 +17,7 @@ namespace assignment2.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.20")
+                .HasAnnotation("ProductVersion", "8.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -271,6 +271,8 @@ namespace assignment2.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("MortgageCases");
                 });
 
@@ -323,6 +325,22 @@ namespace assignment2.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("assignment2.Data.MortgageCase", b =>
+                {
+                    b.HasOne("assignment2.Data.Customer", "Customer")
+                        .WithMany("MortgageCases")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("assignment2.Data.Customer", b =>
+                {
+                    b.Navigation("MortgageCases");
                 });
 #pragma warning restore 612, 618
         }
